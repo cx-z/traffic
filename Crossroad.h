@@ -14,14 +14,27 @@ public:
 	int x; //路口坐标
 	int y;
 	bool M_light = true; //南北方向红绿灯，红灯为False，绿灯为True
-	bool W_light = true; //东西方向红绿灯
+	bool W_light = !M_light; //东西方向红绿灯
 	vector<Car> W_road = {};
 	vector<Car> E_road = {};
 	vector<Car> N_road = {};
 	vector<Car> S_road = {};
+
+	int light_flag = 0;
+	void blink() { //红绿灯变换
+		light_flag = light_flag % 10;
+		if (light_flag >= 5) {
+			M_light = true;
+		}
+		else {
+			M_light = false;
+		}
+		W_light = !M_light;
+		light_flag++;
+	}
 };
 
-Crossroad crossroads[3][3];
+Crossroad crossroads[x_bound%unit_street + 1][y_bound%unit_street + 1];
 
 void init_crossroad() { //初始化路口
 	for (int i = 0; i <= x_bound % 10; i++) {

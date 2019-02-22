@@ -15,7 +15,6 @@ public:
 	void straight() {
 		x += x_speed;
 		y += y_speed;
-		cout << x << "," << y << endl;
 	}
 
 	void steer(string direction) { //汽车选择行驶方向
