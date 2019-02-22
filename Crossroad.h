@@ -4,10 +4,6 @@
 
 using namespace std;
 
-constexpr int x_bound = 20;
-constexpr int y_bound = 20;
-constexpr int unit_street = 10; //街道单位长度是10
-
 class Crossroad
 {
 public:
@@ -15,10 +11,10 @@ public:
 	int y;
 	bool M_light = true; //南北方向红绿灯，红灯为False，绿灯为True
 	bool W_light = !M_light; //东西方向红绿灯
-	vector<Car> W_road = {};
-	vector<Car> E_road = {};
-	vector<Car> N_road = {};
-	vector<Car> S_road = {};
+	vector<Car> W_road;
+	vector<Car> E_road;
+	vector<Car> N_road;
+	vector<Car> S_road;
 
 	int light_flag = 0;
 	void blink() { //红绿灯变换
@@ -39,13 +35,17 @@ public:
 	}
 };
 
-Crossroad crossroads[x_bound%unit_street + 1][y_bound%unit_street + 1];
+Crossroad crossroads[x_bound/unit_street + 1][y_bound/unit_street + 1];
 
 void init_crossroad() { //初始化路口
 	for (int i = 0; i <= x_bound % 10; i++) {
 		for (int j = 0; j <= y_bound % 10; j++) {
 			crossroads[i][j].x = i * 10;
 			crossroads[i][j].y = j * 10;
+			crossroads[i][j].N_road = {};
+			crossroads[i][j].S_road = {};
+			crossroads[i][j].W_road = {};
+			crossroads[i][j].E_road = {};
 		}
 	}
 }
