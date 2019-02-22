@@ -22,14 +22,19 @@ public:
 
 	int light_flag = 0;
 	void blink() { //ºìÂÌµÆ±ä»»
-		light_flag = light_flag % 10;
-		if (light_flag >= 5) {
+		light_flag = light_flag % 11;
+		if (light_flag < 5) {
 			M_light = true;
+			W_light = false;
+		}
+		else if (light_flag == 5) {
+			M_light = false;
+			W_light = false;
 		}
 		else {
 			M_light = false;
+			W_light = true;
 		}
-		W_light = !M_light;
 		light_flag++;
 	}
 };

@@ -20,7 +20,7 @@ bool toyota_run(Car &car) {
 				car.steer("North");
 				car.straight();
 			}
-			else if (crossroads[car.x%unit_street][car.y%unit_street].W_light) { //如果东西向是绿灯，向南走
+			else if (car.up=="North" || crossroads[car.x%unit_street][car.y%unit_street].W_light) { //如果东西向是绿灯，向东走
 				car.steer("East");
 				car.straight();
 			}
