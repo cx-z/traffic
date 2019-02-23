@@ -4,9 +4,10 @@
 
 using namespace std;
 
-constexpr int x_bound = 20;
-constexpr int y_bound = 20;
+constexpr int x_bound = 100;
+constexpr int y_bound = 100;
 constexpr int unit_street = 10; //街道单位长度是10
+constexpr int car_num = 1000;
 
 class Car
 {
@@ -16,8 +17,8 @@ public:
 	int y = 0;
 	int x_speed = 0;
 	int y_speed = 1;
-	string up = "North";
-	string next_up = "North";
+	string up = "East";
+	string next_up = "East";
 	bool wait_flag = false;
 
 	void straight() {
@@ -62,33 +63,32 @@ public:
 };
 
 Car toyota;
-Car nissan[10];
+Car nissan[car_num];
 
 void init_nissan() {
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < car_num; i++) {
 		nissan[i].id = i + 1;
 		int j = rand() % 4 + 1;
 		switch (j)
 		{
 		case 1:
-			//nissan[i].x = rand() % (x_bound % unit_street + 1) * 10;
-			nissan[i].x = (rand() % 3) * 10;
+			nissan[i].x = (rand() % (x_bound / unit_street + 1)) * 10;
+			//nissan[i].x = (rand() % 3) * 10;
 			nissan[i].y = rand() % (y_bound + 1);
 			nissan[i].steer("South");
 		case 2:
-			nissan[i].x = (rand() % 3) * 10;
+			nissan[i].x = (rand() % (x_bound / unit_street + 1)) * 10;
 			nissan[i].y = rand() % (y_bound + 1);
 			nissan[i].steer("North");
 		case 3:
-			nissan[i].y = (rand() % 3) * 10;
+			nissan[i].y = (rand() % (y_bound / unit_street + 1)) * 10;
 			nissan[i].x = rand() % (x_bound + 1);
 			nissan[i].steer("West");
 		case 4:
-			nissan[i].y = (rand() % 3) * 10;
+			nissan[i].y = (rand() % (y_bound / unit_street + 1)) * 10;
 			nissan[i].x = rand() % (x_bound + 1);
 			nissan[i].steer("East");
 		}
 		nissan[i].next_up = nissan[i].up;
 	}
 }
-

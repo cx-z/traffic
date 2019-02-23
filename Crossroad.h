@@ -4,6 +4,8 @@
 
 using namespace std;
 
+constexpr int queue = 10;
+
 class Crossroad
 {
 public:
@@ -23,13 +25,13 @@ public:
 			M_light = true;
 			W_light = false;
 		}
-		else if (light_flag == 5) {
+		else if (light_flag > 5) {
 			M_light = false;
-			W_light = false;
+			W_light = true;
 		}
 		else {
 			M_light = false;
-			W_light = true;
+			W_light = false;
 		}
 		light_flag++;
 	}
@@ -38,8 +40,8 @@ public:
 Crossroad crossroads[x_bound/unit_street + 1][y_bound/unit_street + 1];
 
 void init_crossroad() { //初始化路口
-	for (int i = 0; i <= x_bound % 10; i++) {
-		for (int j = 0; j <= y_bound % 10; j++) {
+	for (int i = 0; i <= x_bound / 10; i++) {
+		for (int j = 0; j <= y_bound / 10; j++) {
 			crossroads[i][j].x = i * 10;
 			crossroads[i][j].y = j * 10;
 			crossroads[i][j].N_road = {};
@@ -49,4 +51,3 @@ void init_crossroad() { //初始化路口
 		}
 	}
 }
-
