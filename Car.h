@@ -54,19 +54,11 @@ public:
 
 	void choose_direction() {
 		int i = rand() % 4;
-		switch (i) {
-		case 0:
-			next_up = string("South");
-		case 1:
-			next_up = string("North");
-		case 2:
-			next_up = string("West");
-		case 3:
-			next_up = string("East");
-		}
+		if (i == 0) next_up = "South";
+		else if (i == 1) next_up = "North";
+		else if (i == 2) next_up = "East";
+		else next_up = "West";
 	}
-
-
 };
 
 Car toyota;

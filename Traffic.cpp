@@ -58,10 +58,13 @@ void judge_wait(Car &car, Crossroad &crossroad) {
 }
 
 bool nissan_run(Car &car) {
-	if (0<car.x < x_bound && 0<car.y < y_bound) {
+	if (car.x < x_bound && car.y < y_bound && car.x>0 && car.y>0) {
 		if (car.x%unit_street == 0 && car.y%unit_street == 0) {
 			judge_wait(car, crossroads[car.x/unit_street][car.y/unit_street]);
 			car.choose_direction();
+			cout << crossroads[car.x / unit_street][car.y / unit_street].W_light << endl;
+			cout << car.x_speed << endl;
+			cout << car.next_up << endl;
 			if (crossroads[car.x/unit_street][car.y/unit_street].M_light && !car.wait_flag) { //如果南北向是绿灯
 				bool temp_flag = car.next_up == "North" || car.next_up == "South" || \
 					(car.up == "South" || car.next_up == "West") || (car.up == "North" || car.next_up == "East");
@@ -92,7 +95,8 @@ bool nissan_run(Car &car) {
 			car.straight();
 		}
 	}
-	else if (car.x == x_bound && 0<car.y < y_bound) {
+	else if (car.x == x_bound && car.y < y_bound && car.y>0) {
+		cout << "右边界" << endl;
 		if (car.y%unit_street == 0) { //在路口
 			judge_wait(car, crossroads[car.x/unit_street][car.y/unit_street]);
 			car.choose_direction();
@@ -123,7 +127,8 @@ bool nissan_run(Car &car) {
 			car.straight();
 		}
 	}
-	else if (0<car.x < x_bound && car.y == y_bound) {
+	else if (car.x < x_bound && car.y == y_bound && car.x>0) {
+		cout << "到达上边界" << endl;
 		if (car.x%unit_street == 0) { //在路口
 			judge_wait(car, crossroads[car.x/unit_street][car.y/unit_street]);
 			car.choose_direction();
@@ -154,7 +159,8 @@ bool nissan_run(Car &car) {
 			car.straight();
 		}
 	}
-	else if(car.x==0 && 0<car.y<y_bound){
+	else if(car.x==0 && car.y<y_bound && car.y>0){
+		cout << "左边界" << endl;
 		if (car.y%unit_street == 0) { //在路口
 			judge_wait(car, crossroads[car.x/unit_street][car.y/unit_street]);
 			car.choose_direction();
@@ -185,7 +191,8 @@ bool nissan_run(Car &car) {
 			car.straight();
 		}
 	}
-	else if (0 < car.x < x_bound && car.y == 0) {
+	else if (car.x < x_bound && car.y == 0 && car.x>0) {
+		cout << "下边界" << endl;
 		if (car.x%unit_street == 0) { //在路口
 			judge_wait(car, crossroads[car.x/unit_street][car.y/unit_street]);
 			car.choose_direction();
@@ -219,7 +226,8 @@ bool nissan_run(Car &car) {
 	else if (car.x == x_bound && car.y == y_bound) {
 		judge_wait(car,crossroads[car.x/unit_street][car.y/unit_street]);
 		car.choose_direction();
-		if (crossroads[car.x/unit_street][car.y/unit_street].M_light) {
+		cout << car.next_up << "----" << endl;
+		if (crossroads[car.x/unit_street][car.y/unit_street].M_light && !car.wait_flag) {
 			if (car.next_up == "South") {
 				car.steer(car.next_up);
 				car.straight();
@@ -228,7 +236,7 @@ bool nissan_run(Car &car) {
 				wait(car, crossroads[car.x/unit_street][car.y/unit_street]);
 			}
 		}
-		else if (crossroads[car.x/unit_street][car.y/unit_street].W_light) {
+		else if (crossroads[car.x/unit_street][car.y/unit_street].W_light && !car.wait_flag) {
 			if (car.next_up == "West") {
 				car.steer(car.next_up);
 				car.straight();
@@ -244,7 +252,7 @@ bool nissan_run(Car &car) {
 	else if (car.x == 0 && car.y == y_bound) {
 		judge_wait(car, crossroads[0][car.y/unit_street]);
 		car.choose_direction();
-		if (crossroads[0][car.y/unit_street].M_light) {
+		if (crossroads[0][car.y/unit_street].M_light && !car.wait_flag) {
 			bool temp_flag = car.next_up == "South" || (car.up == "North" || car.next_up == "East");
 			if (temp_flag) {
 				car.steer(car.next_up);
@@ -254,7 +262,7 @@ bool nissan_run(Car &car) {
 				wait(car, crossroads[0][car.y/unit_street]);
 			}
 		}
-		else if (crossroads[0][car.y/unit_street].W_light) {
+		else if (crossroads[0][car.y/unit_street].W_light && !car.wait_flag) {
 			if (car.next_up == "East") {
 				car.steer(car.next_up);
 				car.straight();
@@ -270,7 +278,7 @@ bool nissan_run(Car &car) {
 	else if (car.x == x_bound && car.y == 0) {
 		judge_wait(car, crossroads[car.x/unit_street][car.y/unit_street]);
 		car.choose_direction();
-		if (crossroads[car.x/unit_street][0].M_light) {
+		if (crossroads[car.x/unit_street][0].M_light && !car.wait_flag) {
 			if (car.next_up == "North") {
 				car.steer(car.next_up);
 				car.straight();
@@ -279,7 +287,7 @@ bool nissan_run(Car &car) {
 				wait(car, crossroads[car.x/unit_street][0]);
 			}
 		}
-		else if (crossroads[car.x/unit_street][0].W_light) {
+		else if (crossroads[car.x/unit_street][0].W_light && !car.wait_flag) {
 			if (car.next_up == "West") {
 				car.steer(car.next_up);
 				car.straight();
@@ -295,7 +303,7 @@ bool nissan_run(Car &car) {
 	else if (car.x == 0 && car.y == 0) {
 		judge_wait(car, crossroads[0][0]);
 		car.choose_direction();
-		if (crossroads[0][0].M_light) {
+		if (crossroads[0][0].M_light && !car.wait_flag) {
 			if (car.next_up == "North") {
 				car.steer(car.next_up);
 				car.straight();
@@ -304,7 +312,7 @@ bool nissan_run(Car &car) {
 				wait(car, crossroads[0][0]);
 			}
 		}
-		else if (crossroads[0][0].W_light) {
+		else if (crossroads[0][0].W_light && !car.wait_flag) {
 			bool temp_flag = car.next_up == "East" || (car.up == "West" || car.next_up == "North");
 			if (temp_flag) {
 				car.steer(car.next_up);
@@ -326,7 +334,7 @@ bool nissan_run(Car &car) {
 }
 
 bool toyota_run(Car &car) {
-	cout << "toyota\t" << car.x << "," << car.y << "\t" << car.x_speed << "," << car.y_speed << endl;
+	//cout << "toyota\t" << car.x << "," << car.y << "\t" << car.x_speed << "," << car.y_speed << endl;
 	if (car.x < x_bound && car.y < y_bound) {
 		if (car.x%unit_street == 0 && car.y%unit_street == 0) {
 			judge_wait(car, crossroads[car.x/unit_street][car.y/unit_street]);
@@ -397,16 +405,19 @@ int main()
 	
 	bool flag = false;
 	for (int i = 0; i < 100; i++) {
-		cout << "nissan1\t" << nissan[0].x << "," << nissan[0].y  << endl;
+		//cout << "nissan1\t" << nissan[0].x << "," << nissan[0].y  << endl;
+
+		cout << "nissan3\t" << nissan[2].x << "," << nissan[2].y << nissan[2].next_up<< endl;
 		for (int m = 0; m <= x_bound / unit_street; m++) {
 			for (int n = 0; n <= y_bound / unit_street; n++) {
 				crossroads[m][n].blink();
 			}
 		}
 		flag = toyota_run(toyota);
-		for (int j = 0; j < 10; j++) {
-			flag = flag;// || nissan_run(nissan[j]);
-		}
+		nissan_run(nissan[2]);
+		/*for (int j = 0; j < 10; j++) {
+			flag = flag || nissan_run(nissan[j]);
+		}*/
 		if (flag) {
 			cout << "耗时" << i << "个单位时间。" << endl;
 			break;
