@@ -20,12 +20,12 @@ public:
 
 	int light_flag = 0;
 	void blink() { //红绿灯变换
-		light_flag = light_flag % 11;
-		if (light_flag < 5) {
+		light_flag = light_flag % 13;
+		if (light_flag > 7) {
 			M_light = true;
 			W_light = false;
 		}
-		else if (light_flag > 5) {
+		else if (light_flag < 5) {
 			M_light = false;
 			W_light = true;
 		}
@@ -34,6 +34,23 @@ public:
 			W_light = false;
 		}
 		light_flag++;
+		release_car();
+	}
+
+	void release_car() {
+		//每次绿灯时，排队等待的前十辆车可以起步离开
+		if (M_light) {
+			int a = (N_road.size() > queue) ? queue : N_road.size();
+			int b = (S_road.size() > queue) ? queue : S_road.size();
+			N_road.erase(N_road.begin(), N_road.begin() + a);
+			S_road.erase(S_road.begin(), S_road.begin() + b);
+		}
+		else if (W_light) {
+			int a = (W_road.size() > queue) ? queue : W_road.size();
+			int b = (E_road.size() > queue) ? queue : E_road.size();
+			W_road.erase(W_road.begin(), W_road.begin() + a);
+			E_road.erase(E_road.begin(), E_road.begin() + b);
+		}
 	}
 };
 

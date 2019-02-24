@@ -9,7 +9,10 @@
 
 bool my_find(vector<Car> &vec, Car &car) { //查找汽车是否在队列中
 	for (auto iter = vec.begin(); iter < vec.end(); iter++) {
-		if (iter->id == car.id) return true;
+		if (iter->id == car.id) {
+			car.serial_num = iter - vec.begin();
+			return true;
+		}
 	}
 	return false;
 }
@@ -17,28 +20,7 @@ bool my_find(vector<Car> &vec, Car &car) { //查找汽车是否在队列中
 void wait(Car &car, Crossroad &crossroad) {
 	car.x_speed = 0;
 	car.y_speed = 0;
-	//每次绿灯时，排队等待的前十辆车可以起步离开
-	if (crossroad.M_light) {
-		if (crossroad.N_road.size() > queue)
-			crossroad.N_road.erase(crossroad.N_road.begin(), crossroad.N_road.begin() + queue);
-		else
-			crossroad.N_road.clear();
-		if (crossroad.S_road.size() > queue)
-			crossroad.S_road.erase(crossroad.S_road.begin(), crossroad.S_road.begin() + queue);
-		else
-			crossroad.S_road.clear();
-	}
-	else if (crossroad.W_light) {
-		if (crossroad.W_road.size() > queue)
-			crossroad.W_road.erase(crossroad.W_road.begin(), crossroad.W_road.begin() + queue);
-		else
-			crossroad.W_road.clear();
-		if (crossroad.E_road.size() > queue)
-			crossroad.E_road.erase(crossroad.E_road.begin(), crossroad.E_road.begin() + queue);
-		else
-			crossroad.E_road.clear();
-	}
-	else if (!car.wait_flag) { //等红灯时，如果汽车没有在排队，进入队列，且等待状态为真
+	if (!car.wait_flag && !crossroad.M_light && !crossroad.W_light) { //等红灯时，如果汽车没有在排队，进入队列，且等待状态为真
 		if (car.up == "North") crossroad.S_road.push_back(car);
 		else if (car.up == "South") crossroad.N_road.push_back(car);
 		else if (car.up == "West") crossroad.E_road.push_back(car);
@@ -327,20 +309,22 @@ bool nissan_run(Car &car) {
 }
 
 bool toyota_run(Car &car) {
-	cout << "toyota\t" << car.x << "," << car.y << "\t" << car.up << endl;
+	cout << "toyota\t" << car.x << "," << car.y << "\t" << car.up << "\t";
+	if (car.wait_flag) {
+		cout << "在排队：";
+		Crossroad cross = crossroads[car.x / unit_street][car.y / unit_street];
+		cout << "在队列中是第" << car.serial_num << "位" << "\t";
+		cout << "南队" << cross.S_road.end() - cross.S_road.begin() << "\t" << cross.S_road.size() << "\t";
+		cout << "北队" << cross.N_road.end() - cross.N_road.begin() << "\t" << cross.N_road.size() << "\t";
+		cout << "东队" << cross.E_road.end() - cross.E_road.begin() << "\t" << cross.E_road.size() << "\t";
+		cout << "西队" << cross.W_road.end() - cross.W_road.begin() << "\t" << cross.W_road.size() << "\t";
+	}
+	cout << endl;
 	if (car.x < x_bound && car.y < y_bound) {
 		if (car.x%unit_street == 0 && car.y%unit_street == 0) {
 			cout << "南北灯" << crossroads[car.x / unit_street][car.y / unit_street].M_light << "\t";
 			cout << "东西灯" << crossroads[car.x / unit_street][car.y / unit_street].W_light << endl;
 			judge_wait(car, crossroads[car.x/unit_street][car.y/unit_street]);
-			/*if (car.up == "North" || crossroads[car.x / unit_street][car.y / unit_street].W_light && !car.wait_flag) { //如果东西向是绿灯，向东走
-				car.steer("East");
-				car.straight();
-			}
-			else if (crossroads[car.x / unit_street][car.y / unit_street].M_light && !car.wait_flag) { //如果南北向是绿灯，向北走
-				car.steer("North");
-				car.straight();
-			}*/
 			if (crossroads[car.x/unit_street][car.y/unit_street].M_light && !car.wait_flag) { //如果南北向是绿灯，向北走
 				car.steer("North");
 				car.straight();
@@ -384,8 +368,8 @@ bool toyota_run(Car &car) {
 		int a = car.x / unit_street;
 		int b = car.y / unit_street;
 		if (car.x%unit_street == 0) { //在路口
-			cout << "南北灯" << crossroads[car.x / unit_street][car.y / unit_street].M_light << "\t";
-			cout << "东西灯" << crossroads[car.x / unit_street][car.y / unit_street].W_light << endl;
+			cout << "南北灯" << crossroads[a][b].M_light << "\t";
+			cout << "东西灯" << crossroads[a][b].W_light << endl;
 			judge_wait(car, crossroads[a][b]); 
 			if (car.up == "North" && !car.wait_flag) { //如果原方向是北，改向东行驶，不必等绿灯
 				car.steer("East");
@@ -420,6 +404,7 @@ int main()
 	init_nissan();
 	
 	bool flag = false;
+	srand((unsigned int)(time(NULL)));
 	for (int i = 0; i < 1000; i++) {
 		//cout << "nissan29\t" << nissan[28].x << "," << nissan[28].y << nissan[28].next_up<< endl;
 		for (int m = 0; m <= x_bound / unit_street; m++) {
