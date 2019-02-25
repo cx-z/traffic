@@ -5,8 +5,8 @@
 
 using namespace std;
 
-constexpr int x_bound = 30;
-constexpr int y_bound = 30;
+constexpr int x_bound = 100;
+constexpr int y_bound = 100;
 constexpr int unit_street = 10; //街道单位长度是10
 constexpr int car_num = 10000;
 
@@ -21,7 +21,7 @@ public:
 	string up = "North";
 	string next_up = "North";
 	bool wait_flag = false;
-	int serial_num = 100;
+	int serial_num = -1;
 
 	void straight() {
 		x += x_speed;

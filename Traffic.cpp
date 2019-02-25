@@ -37,9 +37,17 @@ void judge_wait(Car &car, Crossroad &crossroad) {
 	bool E_flag = my_find(crossroad.E_road, car);
 	//car.wait_flag为真，则汽车正在排队中
 	car.wait_flag = N_flag || S_flag || W_flag || E_flag;
+	if (car.wait_flag && car.serial_num == 0) {
+		if (crossroad.M_light || crossroad.W_light) {
+			car.wait_flag = false;
+		}
+	}
 }
 
 bool nissan_run(Car &car) {
+	if (car.x_speed || car.y_speed) {
+		car.serial_num = -1;
+	}
 	if (car.x < x_bound && car.y < y_bound && car.x>0 && car.y>0) {
 		if (car.x%unit_street == 0 && car.y%unit_street == 0) {
 			judge_wait(car, crossroads[car.x/unit_street][car.y/unit_street]);
@@ -310,14 +318,17 @@ bool nissan_run(Car &car) {
 
 bool toyota_run(Car &car) {
 	cout << "toyota\t" << car.x << "," << car.y << "\t" << car.up << "\t";
-	if (car.wait_flag) {
+	if (!car.x_speed && !car.y_speed) {
 		cout << "在排队：";
 		Crossroad cross = crossroads[car.x / unit_street][car.y / unit_street];
 		cout << "在队列中是第" << car.serial_num << "位" << "\t";
-		cout << "南队" << cross.S_road.end() - cross.S_road.begin() << "\t" << cross.S_road.size() << "\t";
-		cout << "北队" << cross.N_road.end() - cross.N_road.begin() << "\t" << cross.N_road.size() << "\t";
-		cout << "东队" << cross.E_road.end() - cross.E_road.begin() << "\t" << cross.E_road.size() << "\t";
-		cout << "西队" << cross.W_road.end() - cross.W_road.begin() << "\t" << cross.W_road.size() << "\t";
+		cout << "南队" << cross.S_road.size() << "\t";
+		cout << "北队" << cross.N_road.size() << "\t";
+		cout << "东队" << cross.E_road.size() << "\t";
+		cout << "西队" << cross.W_road.size() << "\t";
+	}
+	else {
+		car.serial_num = -1;
 	}
 	cout << endl;
 	if (car.x < x_bound && car.y < y_bound) {
@@ -348,12 +359,12 @@ bool toyota_run(Car &car) {
 		}
 	}
 	else if (car.x == x_bound && car.y < y_bound) {
-		car.steer("North"); //在右边界方向始终为朝北
 		if (car.y%unit_street == 0) { //在路口
 			cout << "南北灯" << crossroads[car.x / unit_street][car.y / unit_street].M_light << "\t";
 			cout << "东西灯" << crossroads[car.x / unit_street][car.y / unit_street].W_light << endl;
 			judge_wait(car, crossroads[car.x/unit_street][car.y/unit_street]);
 			if (crossroads[car.x/unit_street][car.y/unit_street].M_light && !car.wait_flag) { //如果南北向是绿灯，向北走
+				car.steer("North"); //在右边界方向始终为朝北
 				car.straight();
 			}
 			else { //其余情况都等待

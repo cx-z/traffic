@@ -4,7 +4,7 @@
 
 using namespace std;
 
-constexpr int queue = 10;
+constexpr int queue = 3;
 
 class Crossroad
 {
@@ -57,8 +57,10 @@ public:
 Crossroad crossroads[x_bound/unit_street + 1][y_bound/unit_street + 1];
 
 void init_crossroad() { //初始化路口
+	srand((unsigned int)(time(NULL)));
 	for (int i = 0; i <= x_bound / 10; i++) {
 		for (int j = 0; j <= y_bound / 10; j++) {
+			crossroads[i][j].light_flag = rand() % 13;
 			crossroads[i][j].x = i * 10;
 			crossroads[i][j].y = j * 10;
 			crossroads[i][j].N_road = {};
