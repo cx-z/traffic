@@ -7,8 +7,9 @@ using namespace std;
 
 constexpr int x_bound = 100;
 constexpr int y_bound = 100;
-constexpr int unit_street = 10; //街道单位长度是10
-constexpr int car_num = 10000;
+constexpr int x_unit = 10; //街道单位长度是10
+constexpr int y_unit = 10;
+constexpr int car_num = 100000;
 
 class Car
 {
@@ -18,14 +19,16 @@ public:
 	int y = 0;
 	int x_speed = 0;
 	int y_speed = 1;
-	string up = "North";
-	string next_up = "North";
+	string up = "East";
+	string next_up = "East";
 	bool wait_flag = false;
+	bool release_flag = false;
 	int serial_num = -1;
 
 	void straight() {
 		x += x_speed;
 		y += y_speed;
+		//release_flag = false;
 	}
 
 	void steer(string direction) { //汽车选择行驶方向
@@ -49,53 +52,18 @@ public:
 			y_speed = -1;
 			up = "South";
 		}
-		else {
-			x_speed = 0;
-			y_speed = 0;
-		}
 	}
 
 	void choose_direction() {
-		int i = rand() % 4;
-		if (i == 0) next_up = "South";
-		else if (i == 1) next_up = "North";
-		else if (i == 2) next_up = "East";
-		else next_up = "West";
+		bool flag = true;
+		while (flag) {
+			int i = rand() % 4;
+			if (i == 0 && y != 0) { next_up = "South"; flag = false; }
+			else if (i == 1 && y != y_bound) { next_up = "North"; flag = false; }
+			else if (i == 2 && x != x_bound) { next_up = "East"; flag = false; }
+			else if (i == 3 && x != 0) { next_up = "West"; flag = false; }
+		}
 	}
 };
 
-Car toyota;
-Car nissan[car_num];
-
-void init_nissan() {
-	srand((unsigned int)(time(NULL)));
-	for (int i = 0; i < car_num; i++) {
-		nissan[i].id = i + 1;
-		int j = rand() % 4 + 1;
-		switch (j)
-		{
-		case 1:
-			nissan[i].x = (rand() % (x_bound / unit_street + 1)) * 10;
-			//nissan[i].x = (rand() % 3) * 10;
-			nissan[i].y = rand() % (y_bound + 1);
-			nissan[i].steer("South");
-			break;
-		case 2:
-			nissan[i].x = (rand() % (x_bound / unit_street + 1)) * 10;
-			nissan[i].y = rand() % (y_bound + 1);
-			nissan[i].steer("North");
-			break;
-		case 3:
-			nissan[i].y = (rand() % (y_bound / unit_street + 1)) * 10;
-			nissan[i].x = rand() % (x_bound + 1);
-			nissan[i].steer("West");
-			break;
-		case 4:
-			nissan[i].y = (rand() % (y_bound / unit_street + 1)) * 10;
-			nissan[i].x = rand() % (x_bound + 1);
-			nissan[i].steer("East");
-			break;
-		}
-		nissan[i].next_up = nissan[i].up;
-	}
-}
+Car cars[car_num+1];
