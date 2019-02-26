@@ -5,43 +5,43 @@
 #include<queue>
 
 void init_nissan() {
-	srand((unsigned int)(time(NULL)));
 	for (int i = 1; i <= car_num; i++) {
 		cars[i].id = i;
-		int j = rand() % 4 + 1;
+		int j = rand() % 4;
 		switch (j)
 		{
+		case 0:
+			cars[i].x = (rand() % (x_bound / x_unit)) * x_unit;
+			cars[i].y = rand() % y_bound + 1;
+			cars[i].up = "South";
+			break;
 		case 1:
-			cars[i].x = (rand() % (x_bound / x_unit + 1)) * 10;
-			cars[i].y = rand() % (y_bound + 1);
-			cars[i].steer("South");
+			cars[i].x = (rand() % (x_bound / x_unit)) * x_unit;
+			cars[i].y = rand() % y_bound;
+			cars[i].up = "North";
 			break;
 		case 2:
-			cars[i].x = (rand() % (x_bound / x_unit + 1)) * 10;
-			cars[i].y = rand() % (y_bound + 1);
-			cars[i].steer("North");
+			cars[i].y = (rand() % (y_bound / y_unit)) * y_unit;
+			cars[i].x = rand() % x_bound + 1;
+			cars[i].up = "West";
 			break;
 		case 3:
-			cars[i].y = (rand() % (y_bound / y_unit + 1)) * 10;
-			cars[i].x = rand() % (x_bound + 1);
-			cars[i].steer("West");
-			break;
-		case 4:
-			cars[i].y = (rand() % (y_bound / y_unit + 1)) * 10;
-			cars[i].x = rand() % (x_bound + 1);
-			cars[i].steer("East");
+			cars[i].y = (rand() % (y_bound / y_unit)) * y_unit;
+			cars[i].x = rand() % x_bound;
+			cars[i].up = "East";
 			break;
 		}
+		cars[i].steer(cars[i].up);
 		cars[i].next_up = cars[i].up;
 	}
 }
 
 void init_crossroad() { //初始化路口
-	for (int i = 0; i <= x_bound / 10; i++) {
-		for (int j = 0; j <= y_bound / 10; j++) {
+	for (int i = 0; i <= x_bound / x_unit; i++) {
+		for (int j = 0; j <= y_bound / y_unit; j++) {
 			crossroads[i][j].light_flag = rand() % 13;
-			crossroads[i][j].x = i * 10;
-			crossroads[i][j].y = j * 10;
+			crossroads[i][j].x = i * x_unit;
+			crossroads[i][j].y = j * y_unit;
 			crossroads[i][j].N_road = {};
 			crossroads[i][j].S_road = {};
 			crossroads[i][j].W_road = {};
@@ -76,6 +76,10 @@ void join_line(Car &car, Crossroad &cross) {
 
 bool toyota_run(Car &car) {
 	if (car.x == x_bound && car.y == y_bound) {
+		return true;
+	}
+	else if (car.x > x_bound || car.x<0 || car.y>y_bound || car.y < 0) {
+		cout << "测试汽车出界，请检查代码" << endl;
 		return true;
 	}
 	else if (car.x%x_unit == 0 && car.y%y_unit == 0) {
@@ -118,6 +122,12 @@ bool toyota_run(Car &car) {
 }
 
 bool nissan_run(Car &car) {
+	if (car.x > x_bound || car.x<0 || car.y>y_bound || car.y < 0) {
+		cout << "一辆NISSAN出界，请检查代码" << endl;
+		cout << car.id << "\t" << car.x << "," << car.y << car.up << endl;
+		cout << crossroads[car.x / x_unit][car.y / y_unit].M_light << "\t" << crossroads[car.x / x_unit][car.y / y_unit].W_light << endl;
+		return true;
+	}
 	if (car.x%x_unit == 0 && car.y%y_unit == 0) {
 		car.choose_direction();
 		Crossroad &cross = crossroads[car.x / x_unit][car.y / y_unit];
@@ -171,7 +181,7 @@ void toyota_wait(Car &car, Crossroad &cross) {
 }
 
 void nissan_wait(Car &car, Crossroad &cross) {
-
+	
 }
 
 void Simulation() {
@@ -181,6 +191,7 @@ void Simulation() {
 	bool flag = false;
 	for (int i = 0; i < 1000; i++) {
 		cout << cars[0].x << "," << cars[0].y << cars[0].up << endl;
+		//cout << cars[9].x << "," << cars[9].y << cars[9].up << endl;
 		for (int m = 0; m <= x_bound / x_unit; m++) {
 			for (int n = 0; n <= y_bound / y_unit; n++) {
 				crossroads[m][n].blink();
@@ -193,6 +204,7 @@ void Simulation() {
 			toyota_wait(cars[0], crossroads[cars[0].x / x_unit][cars[0].y / y_unit]);
 		}
 		for (int j = 1; j <= car_num; j++) {
+		//for (int j = 9; j < 10;j++) {
 			if (!cars[j].wait_flag) {
 				flag = flag || nissan_run(cars[j]);
 			}

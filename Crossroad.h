@@ -5,7 +5,7 @@
 
 using namespace std;
 
-constexpr int release_num = 10;
+constexpr int release_num = 3;
 
 class Crossroad
 {
