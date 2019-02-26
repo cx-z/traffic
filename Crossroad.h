@@ -5,7 +5,7 @@
 
 using namespace std;
 
-constexpr int release_num = 3;
+constexpr int release_num = 5;
 
 class Crossroad
 {
@@ -28,11 +28,11 @@ public:
 		}
 		else {
 			light_flag = light_flag % 13;
-			if (light_flag > 7) {
+			if (light_flag < 6) {
 				M_light = true;
 				W_light = false;
 			}
-			else if (light_flag < 5) {
+			else if (light_flag > 6) {
 				M_light = false;
 				W_light = true;
 			}

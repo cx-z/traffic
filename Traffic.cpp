@@ -2,13 +2,12 @@
 //
 
 #include "pch.h"
-#include <iostream>
-#include"Car.h"
-#include"Crossroad.h"
-#include<queue>
 #include"Simulation.h"
+#include<time.h>
 
 int main()
 {
-	Simulation();
+	srand((unsigned int)(time(NULL)));
+	//Simulation1();
+	Simulation2();
 }

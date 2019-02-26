@@ -9,7 +9,7 @@ constexpr int x_bound = 200;
 constexpr int y_bound = 200;
 constexpr int x_unit = 20; //街道单位长度是20
 constexpr int y_unit = 20;
-constexpr int car_num = 100000;
+constexpr int car_num = 1;
 
 class Car
 {
