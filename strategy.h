@@ -25,16 +25,16 @@ void join_line(Car &car, Crossroad &cross) {
 		cross.E_road.push(car);
 		car.serial_num = cross.E_road.size();
 	}
-	if (car.id == 0) {
-		//cout << "排在第" << car.serial_num << "位" << endl;
-	}
+	/*if (car.id == 0) {
+		cout << "排在第" << car.serial_num << "位" << endl;
+	}*/
 }
 
 void strategy1(Car &car) {
 	Crossroad &cross = crossroads[car.x / x_unit][car.y / y_unit];
 	//cout << "南北灯" << cross.M_light << "\t" << "东西灯" << cross.W_light << endl;
-	if (cross.M_light && car.up == "North" && (!cross.S_road.size() || car.release_flag)) {
-		if (cross.y != y_bound) {
+	if (cross.M_light && car.up == "North") {
+		if (cross.y != y_bound && (!cross.S_road.size() || car.release_flag)) {
 			car.steer("North");
 			car.straight();
 		}
@@ -42,14 +42,6 @@ void strategy1(Car &car) {
 			car.steer("East");
 			car.straight();
 		}
-		/*if (cross.x != x_bound) {
-			car.steer("East");
-			car.straight();
-		}
-		else {
-			car.steer("North");
-			car.straight();
-		}*/
 	}
 	else if (cross.W_light && car.up == "East" && (!cross.W_road.size() || car.release_flag)) {
 		if (cross.y != y_bound) {
@@ -61,7 +53,7 @@ void strategy1(Car &car) {
 			car.straight();
 		}
 	}
-	else if (!cross.M_light && car.up == "North" && (!cross.S_road.size() || car.release_flag)) {
+	else if (!cross.M_light && car.up == "North") {
 		if (cross.x != x_bound) {
 			car.steer("East");
 			car.straight();
@@ -78,27 +70,11 @@ void navigate(Car &car, int p, int q) {
 	else {
 		int M_flag = 6 - (crossroads[p][q + 1].light_flag + y_unit) % 13;
 		int W_flag = 6 - (crossroads[p + 1][q].light_flag + x_unit) % 13;
-		if (M_flag > 0 && W_flag > 0) {
-			car.next_up = "North";
-		}
-		else if (M_flag <= 0 && W_flag <= 0) {
+		if (W_flag <= 0 && M_flag < 0) {
 			car.next_up = "East";
 		}
-		else if (M_flag > 0 && W_flag <= 0) {
-			if (M_flag < (W_flag + 6)) {
-				car.next_up = "East";
-			}
-			else {
-				car.next_up = "North";
-			}
-		}
 		else {
-			if ((M_flag + 6) <= W_flag) {
-				car.next_up = "North";
-			}
-			else {
-				car.next_up = "East";
-			}
+			car.next_up = "North";
 		}
 	}
 	car.steer(car.next_up);
